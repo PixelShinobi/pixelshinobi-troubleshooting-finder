@@ -40,7 +40,7 @@ _Conflict Radar – Troubleshooting & Conflict Finder. Last updated Oct 29, 2026
 
 1. **Engine:** a WordPress-free bisect planner plus tests — baseline checks (fault with everything on, fault with everything off), binary narrowing, single-culprit confirmation, and the interaction case. Serializable state. **Done Oct 29, 2026** — see Milestone 1 results.
 2. **Plugin:** troubleshooting mode (session-scoped plugin/theme filtering), symptom probe via loopback requests, batched bisect runner, admin UI, debug bundle export. Manual test in a Docker WordPress under locked-down host limits (30 s, 128 MB, no `exec()`). **Done Oct 29, 2026** — see Milestone 2 results (the test rig ended up a local WordPress install rather than Docker; the locked-down limits are survived by design, since a search never does more than one probe per request).
-3. **Submit:** readme.txt and screenshots, a clean Plugin Check run, PHP-Scoper release build if needed, then submit to WordPress.org.
+3. **Submit:** readme.txt and screenshots, a clean Plugin Check run, PHP-Scoper release build if needed, then submit to WordPress.org. **Prepped Oct 29, 2026** — see Milestone 3 results. The submission itself is Jizhou's step (WordPress.org requires the account holder to submit).
 4. **Launch watch:** track installs, reviews and support threads.
 5. **Paid service:** only if the numbers below say so.
 
@@ -73,6 +73,16 @@ The plugin layer, as built (module map in CLAUDE.md):
 - **Debug bundle**: versions, theme, active plugins, limits — passed through `Redactor` (emails, IPs, absolute paths, long hex tokens) before display or download. Salts/keys are never collected.
 
 **Verified end-to-end** on a real WordPress 7.1.4 install (MariaDB, PHP 8.3 built-in server — used in place of the planned Docker rig; Docker is not available in the build environment, and the one-probe-per-request design is what the 30 s/128 MB limits actually test). Fixture plugins: one that fatals every front-end page alone, a pair that only breaks together, and a harmless marker plugin. Results: the automated search found the single culprit in 4 steps through the real admin UI (login → form → AJAX steps → rendered verdict and step log); the pair search concluded `interaction-suspected` and blamed nobody; manual mode left visitors untouched while the cookie holder saw the filtered set, with working per-plugin toggles; the break-glass exit link ended a session and neutralized the stale cookie; deactivating the plugin removed the loader and the session. Unit suite: 34 tests, 95 assertions (engine + probe classifier + redactor); PHPCS clean.
+
+## Milestone 3 results
+
+Submission prep, done Oct 29, 2026:
+
+- **readme.txt** in WordPress.org format (contributors: pixelshinobi — must match the submitting account's username); short description within the 150-character limit.
+- **Release build:** `bin/build-release.sh` produces `build/conflict-radar.zip` (44K, single `conflict-radar/` folder, production autoloader, no dev files; `.wordpress-org/` excluded via `.distignore`). The zip itself was installed into a live WordPress and activated cleanly.
+- **Plugin Check on the built zip: "No errors found"** — zero errors, zero warnings. Getting there cost three fixes: the display name dropped the restricted word "plugin" (now "Conflict Radar – Troubleshooting & Conflict Finder"; slug unchanged), the mu-plugin loader switched to WP_Filesystem (a direct `copy()` drew a PluginDirectoryWrite error), and the Domain Path header was dropped (it pointed at a folder that doesn't ship).
+- **Screenshots** (`.wordpress-org/`, captured from the shipped zip running on a WordPress 7.1.4 + SQLite rig, headless Chromium): 1 — the Tools page with the automated search, manual mode and debug export; 2 — a finished search naming Fixture Broken as the culprit, with the full 4-step test log; 3 — the front end in troubleshooting mode, admin bar showing "Troubleshooting mode is ON". They upload with the submission (wp.org assets live outside the plugin zip).
+- **Remaining step — Jizhou's:** log in at wordpress.org/plugins/developers/add/ with the pixelshinobi account, upload `build/conflict-radar.zip`, and add the three screenshots. Review is by the plugin team; nothing else is blocked.
 
 ## Numbers that decide what happens next
 
