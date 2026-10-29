@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<ruleset name="Conflict Radar">
+	<description>WordPress Coding Standards plus PHP 7.4 compatibility, for our own code.</description>
+
+	<file>src</file>
+	<file>conflict-radar.php</file>
+
+	<exclude-pattern>*/vendor/*</exclude-pattern>
+
+	<arg name="extensions" value="php"/>
+	<arg name="parallel" value="4"/>
+	<arg value="p"/>
+
+	<config name="minimum_supported_wp_version" value="6.0"/>
+	<config name="testVersion" value="7.4-"/>
+
+	<rule ref="WordPress">
+		<!-- The plugin targets the admin; a few sniffs do not fit a tools page. -->
+		<exclude name="WordPress.Security.NonceVerification.Recommended"/>
+		<!-- File names follow PSR-4, which Composer autoloading requires. -->
+		<exclude name="WordPress.Files.FileName.NotHyphenatedLowercase"/>
+		<exclude name="WordPress.Files.FileName.InvalidClassFileName"/>
+	</rule>
+	<rule ref="PHPCompatibilityWP"/>
+</ruleset>
