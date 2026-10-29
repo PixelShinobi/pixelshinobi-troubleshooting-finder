@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name:       Conflict Radar – Troubleshooting & Plugin Conflict Finder
+ * Plugin Name:       Conflict Radar – Troubleshooting & Conflict Finder
  * Plugin URI:        https://github.com/PixelShinobi/conflict-radar
  * Description:       Find which plugin breaks your site. Conflict Radar runs an automated bisect in a troubleshooting session only you can see, and tells you the culprit — or that it isn't a plugin at all.
  * Version:           0.1.0
@@ -8,20 +8,41 @@
  * License:           GPLv2 or later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       conflict-radar
- * Domain Path:       /languages
  * Requires at least: 6.0
  * Requires PHP:      7.4
  *
  * @package ConflictRadar
  */
 
+declare(strict_types=1);
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-// Milestone 1 ships the WordPress-free bisect engine in src/Bisect/ only.
-// The plugin bootstrap (troubleshooting mode, admin UI) arrives in Milestone 2.
-$conflict_radar_autoload = __DIR__ . '/vendor/autoload.php';
-if ( file_exists( $conflict_radar_autoload ) ) {
-	require_once $conflict_radar_autoload;
+define( 'CONFLICT_RADAR_VERSION', '0.1.0' );
+define( 'CONFLICT_RADAR_FILE', __FILE__ );
+
+// In a release build, Composer's autoloader ships in vendor/. Cloning
+// the repo and copying the folder into wp-content/plugins must also
+// work, so a tiny PSR-4 fallback covers the no-vendor case.
+if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
+	require_once __DIR__ . '/vendor/autoload.php';
+} else {
+	spl_autoload_register(
+		function ( $class_name ) {
+			$prefix = 'ConflictRadar\\';
+			if ( 0 === strpos( $class_name, $prefix ) ) {
+				$path = __DIR__ . '/src/' . str_replace( '\\', '/', substr( $class_name, strlen( $prefix ) ) ) . '.php';
+				if ( file_exists( $path ) ) {
+					require_once $path;
+				}
+			}
+		}
+	);
 }
+
+ConflictRadar\Plugin::init();
+
+register_activation_hook( __FILE__, array( 'ConflictRadar\\Plugin', 'activate' ) );
+register_deactivation_hook( __FILE__, array( 'ConflictRadar\\Plugin', 'deactivate' ) );

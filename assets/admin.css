@@ -1,0 +1,20 @@
+/* Conflict Radar admin page. Deliberately minimal: wp-admin does the
+   visual heavy lifting, these rules only shape our own blocks. */
+
+.cr-verdict {
+	padding: 1px 12px 12px;
+	margin: 16px 0;
+}
+
+.cr-verdict h2 {
+	margin-bottom: 4px;
+}
+
+#cr-bisect-log {
+	margin-left: 18px;
+	list-style: decimal;
+}
+
+#cr-bisect-status {
+	font-weight: 600;
+}
