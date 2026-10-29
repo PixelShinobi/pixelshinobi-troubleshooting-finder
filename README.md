@@ -1,4 +1,4 @@
-# Conflict Radar – Troubleshooting & Plugin Conflict Finder
+# Conflict Radar – Troubleshooting & Conflict Finder
 
 A WordPress plugin that finds which plugin breaks your site. Instead of the manual routine — turn everything off, re-enable plugins one by one until the break comes back — Conflict Radar runs a **bisect**: it tests halves of your plugin list in a troubleshooting session only you can see, and narrows down to the culprit in a handful of checks.
 

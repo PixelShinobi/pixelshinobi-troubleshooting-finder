@@ -1,6 +1,6 @@
 # Conflict Radar: Plan
 
-_Conflict Radar – Troubleshooting & Plugin Conflict Finder. Last updated Oct 29, 2026._
+_Conflict Radar – Troubleshooting & Conflict Finder. Last updated Oct 29, 2026._
 
 ## Why this, why now
 
@@ -21,7 +21,7 @@ _Conflict Radar – Troubleshooting & Plugin Conflict Finder. Last updated Oct 2
 - **No locked features in the free plugin** (Guideline 5). Paid features must be a separate service ("serviceware", Guideline 6) or a separate Pro plugin sold elsewhere.
 - **No calls to outside servers without explicit opt-in** (Guideline 7). The free plugin works fully on-site; the bisect's test requests are loopback requests to the site itself.
 - **All code GPL-compatible** (Guideline 1).
-- **The public slug can't start with another project's name** (Guideline 17). **Decided:** the plugin is **Conflict Radar – Troubleshooting & Plugin Conflict Finder**, slug and text domain `conflict-radar` (sibling brand to Upgrade Radar). WordPress.org confirms the slug during review.
+- **The public slug can't start with another project's name** (Guideline 17). **Decided:** the plugin is **Conflict Radar – Troubleshooting & Conflict Finder**, slug and text domain `conflict-radar` (sibling brand to Upgrade Radar). WordPress.org confirms the slug during review. (Display name adjusted Oct 29, 2026: Plugin Check flags the word "plugin" as a restricted term in a plugin's name, so "& Plugin Conflict Finder" became "& Conflict Finder"; the slug is unchanged.)
 - **Upgrade prompts must be rare and dismissible** (Guideline 11).
 
 ## v1: free plugin
@@ -39,7 +39,7 @@ _Conflict Radar – Troubleshooting & Plugin Conflict Finder. Last updated Oct 2
 ## Milestones
 
 1. **Engine:** a WordPress-free bisect planner plus tests — baseline checks (fault with everything on, fault with everything off), binary narrowing, single-culprit confirmation, and the interaction case. Serializable state. **Done Oct 29, 2026** — see Milestone 1 results.
-2. **Plugin:** troubleshooting mode (session-scoped plugin/theme filtering), symptom probe via loopback requests, batched bisect runner, admin UI, debug bundle export. Manual test in a Docker WordPress under locked-down host limits (30 s, 128 MB, no `exec()`).
+2. **Plugin:** troubleshooting mode (session-scoped plugin/theme filtering), symptom probe via loopback requests, batched bisect runner, admin UI, debug bundle export. Manual test in a Docker WordPress under locked-down host limits (30 s, 128 MB, no `exec()`). **Done Oct 29, 2026** — see Milestone 2 results (the test rig ended up a local WordPress install rather than Docker; the locked-down limits are survived by design, since a search never does more than one probe per request).
 3. **Submit:** readme.txt and screenshots, a clean Plugin Check run, PHP-Scoper release build if needed, then submit to WordPress.org.
 4. **Launch watch:** track installs, reviews and support threads.
 5. **Paid service:** only if the numbers below say so.
@@ -62,6 +62,17 @@ The engine lives in `src/Bisect/`: `BisectSession` (the planner), `BisectConclus
 - **Applying a subset** means filtering the active-plugins option for the troubleshooting session only (the Health Check pattern: an mu-plugin or early filter keyed on the session cookie). Never write the real `active_plugins` option during a bisect.
 - **Recovery:** store the session state and an expiry in an option; a request that finds an expired or orphaned session must restore normal loading. Add a `WP_DISABLE_FATAL_ERROR_HANDLER`-aware path so a fatal in the admin's own session can't lock them out.
 - **Step budget per request:** apply subset → probe → record, one bisect step per request at most; the UI advances via AJAX like Upgrade Radar's batches.
+
+## Milestone 2 results
+
+The plugin layer, as built (module map in CLAUDE.md):
+
+- **Session enforcement** is a standalone mu-plugin loader, copied into `wp-content/mu-plugins` while a session exists and removed when it ends. It filters `active_plugins` (and the theme, when switched) only for requests carrying the session cookie, intersected against the real active list read straight from the database, so a plugin deactivated elsewhere mid-session stays off. Conflict Radar itself is always kept on inside the session so the exit is reachable. Failsafes: one-hour expiry, a watchdog on `admin_init`, deactivation cleanup, and a break-glass exit URL (token in the link) that works even if wp-admin is broken. The real `active_plugins` option is never written.
+- **The probe** is a loopback `wp_remote_get` carrying the session cookie with a cache-busting query arg; `Probe` classifies the response (transport failure, HTTP 5xx, WordPress/PHP fatal signatures, or missing marker text). The baselines protect the verdict: a page that "faults" under every set fails the everything-off baseline and reports not-a-plugin instead of blaming someone.
+- **The runner** (`BisectJob`) persists the engine state in an option and runs exactly one probe per AJAX request; the page's script polls until the search completes, then the session ends itself and the verdict + full step log render on the Tools page.
+- **Debug bundle**: versions, theme, active plugins, limits — passed through `Redactor` (emails, IPs, absolute paths, long hex tokens) before display or download. Salts/keys are never collected.
+
+**Verified end-to-end** on a real WordPress 7.1.4 install (MariaDB, PHP 8.3 built-in server — used in place of the planned Docker rig; Docker is not available in the build environment, and the one-probe-per-request design is what the 30 s/128 MB limits actually test). Fixture plugins: one that fatals every front-end page alone, a pair that only breaks together, and a harmless marker plugin. Results: the automated search found the single culprit in 4 steps through the real admin UI (login → form → AJAX steps → rendered verdict and step log); the pair search concluded `interaction-suspected` and blamed nobody; manual mode left visitors untouched while the cookie holder saw the filtered set, with working per-plugin toggles; the break-glass exit link ended a session and neutralized the stale cookie; deactivating the plugin removed the loader and the session. Unit suite: 34 tests, 95 assertions (engine + probe classifier + redactor); PHPCS clean.
 
 ## Numbers that decide what happens next
 
