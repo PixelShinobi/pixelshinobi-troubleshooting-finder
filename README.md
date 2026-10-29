@@ -2,7 +2,7 @@
 
 A WordPress plugin that finds which plugin breaks your site. Instead of the manual routine — turn everything off, re-enable plugins one by one until the break comes back — Conflict Radar runs a **bisect**: it tests halves of your plugin list in a troubleshooting session only you can see, and narrows down to the culprit in a handful of checks.
 
-**Status:** milestone 1 (the bisect engine) is done. Milestone 2 turns it into the WordPress plugin. v1 targets the WordPress.org directory after that.
+**Status:** the plugin is complete and verified — troubleshooting mode, the automated search, and the debug bundle all work end-to-end against a live WordPress, and the release build passes WordPress.org's Plugin Check with no errors. What remains is the WordPress.org submission itself. See PLAN.md for the milestone record.
 
 - [`PLAN.md`](PLAN.md): why this, our angle, v1 scope, milestones and the numbers that decide what's next
 - [`CLAUDE.md`](CLAUDE.md): instructions for Claude Code sessions working in this repo
