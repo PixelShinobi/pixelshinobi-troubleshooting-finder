@@ -29,8 +29,8 @@ final class AdminPage {
 	 */
 	public static function register_menu(): void {
 		add_management_page(
-			__( 'Conflict Radar', 'conflict-radar' ),
-			__( 'Conflict Radar', 'conflict-radar' ),
+			__( 'Conflict Radar', 'conflict-radar-finder' ),
+			__( 'Conflict Radar', 'conflict-radar-finder' ),
 			'manage_options',
 			'conflict-radar',
 			array( self::class, 'render' )
@@ -74,7 +74,7 @@ final class AdminPage {
 		$wp_admin_bar->add_node(
 			array(
 				'id'    => 'conflict-radar-ts',
-				'title' => __( 'Troubleshooting mode is ON — open Conflict Radar', 'conflict-radar' ),
+				'title' => __( 'Troubleshooting mode is ON — open Conflict Radar', 'conflict-radar-finder' ),
 				'href'  => admin_url( 'tools.php?page=conflict-radar' ),
 			)
 		);
@@ -88,9 +88,9 @@ final class AdminPage {
 		if ( null === SessionManager::current() || ! isset( $_COOKIE[ SessionManager::COOKIE ] ) ) {
 			return;
 		}
-		echo '<div class="notice notice-warning"><p><strong>' . esc_html__( 'Conflict Radar:', 'conflict-radar' ) . '</strong> '
-			. esc_html__( 'troubleshooting mode is on for this browser. Only you see the site this way — your visitors see the real site.', 'conflict-radar' )
-			. ' <a href="' . esc_url( admin_url( 'tools.php?page=conflict-radar' ) ) . '">' . esc_html__( 'Manage or exit', 'conflict-radar' ) . '</a></p></div>';
+		echo '<div class="notice notice-warning"><p><strong>' . esc_html__( 'Conflict Radar:', 'conflict-radar-finder' ) . '</strong> '
+			. esc_html__( 'troubleshooting mode is on for this browser. Only you see the site this way — your visitors see the real site.', 'conflict-radar-finder' )
+			. ' <a href="' . esc_url( admin_url( 'tools.php?page=conflict-radar' ) ) . '">' . esc_html__( 'Manage or exit', 'conflict-radar-finder' ) . '</a></p></div>';
 	}
 
 	// ------------------------------------------------------------------
@@ -219,8 +219,8 @@ final class AdminPage {
 		$self      = plugin_basename( CONFLICT_RADAR_FILE );
 		$bisecting = null !== $job && 'running' === $job['status'];
 
-		echo '<div class="wrap"><h1>' . esc_html__( 'Conflict Radar', 'conflict-radar' ) . '</h1>';
-		echo '<p>' . esc_html__( 'Find the plugin that breaks your site — without your visitors ever noticing. Troubleshooting here applies only to your browser.', 'conflict-radar' ) . '</p>';
+		echo '<div class="wrap"><h1>' . esc_html__( 'Conflict Radar', 'conflict-radar-finder' ) . '</h1>';
+		echo '<p>' . esc_html__( 'Find the plugin that breaks your site — without your visitors ever noticing. Troubleshooting here applies only to your browser.', 'conflict-radar-finder' ) . '</p>';
 
 		if ( null !== $job && 'complete' === $job['status'] && null !== $job['conclusion'] ) {
 			self::render_verdict( $job );
@@ -242,36 +242,36 @@ final class AdminPage {
 		$conclusion = BisectConclusion::from_array( (array) $job['conclusion'] );
 		$names      = (array) $job['names'];
 
-		echo '<div class="notice notice-info cr-verdict"><h2>' . esc_html__( 'Search result', 'conflict-radar' ) . '</h2>';
+		echo '<div class="notice notice-info cr-verdict"><h2>' . esc_html__( 'Search result', 'conflict-radar-finder' ) . '</h2>';
 		switch ( $conclusion->type() ) {
 			case BisectConclusion::CULPRIT_FOUND:
 				$culprit = (string) $conclusion->culprit();
 				echo '<p><strong>' . esc_html( isset( $names[ $culprit ] ) ? $names[ $culprit ] : $culprit ) . '</strong> '
-					. esc_html__( 'is the problem: the page breaks with this plugin active on its own. Leave it deactivated, or take this result to its author — everything else was cleared.', 'conflict-radar' ) . '</p>';
+					. esc_html__( 'is the problem: the page breaks with this plugin active on its own. Leave it deactivated, or take this result to its author — everything else was cleared.', 'conflict-radar-finder' ) . '</p>';
 				break;
 			case BisectConclusion::INTERACTION_SUSPECTED:
 				$set = array();
 				foreach ( $conclusion->smallest_fault_set() as $basename ) {
 					$set[] = isset( $names[ $basename ] ) ? $names[ $basename ] : $basename;
 				}
-				echo '<p>' . esc_html__( 'No single plugin causes this — the break needs a combination. The smallest set seen breaking the page:', 'conflict-radar' )
+				echo '<p>' . esc_html__( 'No single plugin causes this — the break needs a combination. The smallest set seen breaking the page:', 'conflict-radar-finder' )
 					. ' <strong>' . esc_html( implode( ', ', $set ) ) . '</strong>. '
-					. esc_html__( 'Try deactivating one of these at a time; the conflict is between two or more of them.', 'conflict-radar' ) . '</p>';
+					. esc_html__( 'Try deactivating one of these at a time; the conflict is between two or more of them.', 'conflict-radar-finder' ) . '</p>';
 				break;
 			case BisectConclusion::NOT_A_CANDIDATE:
-				echo '<p>' . esc_html__( 'The problem happens even with every plugin off, so it is not a plugin conflict. Look at the theme, or at the hosting/server side.', 'conflict-radar' ) . '</p>';
+				echo '<p>' . esc_html__( 'The problem happens even with every plugin off, so it is not a plugin conflict. Look at the theme, or at the hosting/server side.', 'conflict-radar-finder' ) . '</p>';
 				break;
 			case BisectConclusion::NOT_REPRODUCIBLE:
-				echo '<p>' . esc_html__( 'The problem could not be reproduced with everything on. It may be intermittent, already fixed, or only happen somewhere else — try again with the exact page where it occurs.', 'conflict-radar' ) . '</p>';
+				echo '<p>' . esc_html__( 'The problem could not be reproduced with everything on. It may be intermittent, already fixed, or only happen somewhere else — try again with the exact page where it occurs.', 'conflict-radar-finder' ) . '</p>';
 				break;
 			default:
-				echo '<p>' . esc_html__( 'There were no plugins to search.', 'conflict-radar' ) . '</p>';
+				echo '<p>' . esc_html__( 'There were no plugins to search.', 'conflict-radar-finder' ) . '</p>';
 				break;
 		}
 		echo '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '">';
 		wp_nonce_field( 'cr_dismiss_bisect' );
 		echo '<input type="hidden" name="action" value="cr_dismiss_bisect" />';
-		echo '<p><button type="submit" class="button">' . esc_html__( 'Dismiss', 'conflict-radar' ) . '</button></p></form></div>';
+		echo '<p><button type="submit" class="button">' . esc_html__( 'Dismiss', 'conflict-radar-finder' ) . '</button></p></form></div>';
 	}
 
 	/**
@@ -281,33 +281,33 @@ final class AdminPage {
 	 * @param bool       $bisecting Whether a search is running.
 	 */
 	private static function render_bisect_section( $job, bool $bisecting ): void {
-		echo '<h2>' . esc_html__( 'Find the conflicting plugin automatically', 'conflict-radar' ) . '</h2>';
+		echo '<h2>' . esc_html__( 'Find the conflicting plugin automatically', 'conflict-radar-finder' ) . '</h2>';
 		if ( $bisecting ) {
 			$count = count( (array) $job['names'] );
-			echo '<p id="cr-bisect-status">' . esc_html( sprintf( /* translators: %d: number of plugins being searched */ __( 'Searching %d plugins…', 'conflict-radar' ), $count ) ) . '</p>';
+			echo '<p id="cr-bisect-status">' . esc_html( sprintf( /* translators: %d: number of plugins being searched */ __( 'Searching %d plugins…', 'conflict-radar-finder' ), $count ) ) . '</p>';
 			echo '<ol id="cr-bisect-log"></ol>';
 			echo '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '">';
 			wp_nonce_field( 'cr_cancel_bisect' );
 			echo '<input type="hidden" name="action" value="cr_cancel_bisect" />';
-			echo '<p><button type="submit" class="button">' . esc_html__( 'Cancel the search', 'conflict-radar' ) . '</button></p></form>';
+			echo '<p><button type="submit" class="button">' . esc_html__( 'Cancel the search', 'conflict-radar-finder' ) . '</button></p></form>';
 			return;
 		}
 		if ( null !== $job && 'complete' === $job['status'] ) {
 			self::render_step_log( $job );
 		}
-		echo '<p>' . esc_html__( 'Conflict Radar turns plugins off in halves — only for your browser — and checks the page after each step, so a conflict among 20 plugins takes a handful of checks instead of 20 rounds of manual testing. It always tests against the default theme.', 'conflict-radar' ) . '</p>';
+		echo '<p>' . esc_html__( 'Conflict Radar turns plugins off in halves — only for your browser — and checks the page after each step, so a conflict among 20 plugins takes a handful of checks instead of 20 rounds of manual testing. It always tests against the default theme.', 'conflict-radar-finder' ) . '</p>';
 		echo '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '">';
 		wp_nonce_field( 'cr_start_bisect' );
 		echo '<input type="hidden" name="action" value="cr_start_bisect" />';
 		echo '<table class="form-table"><tbody>';
-		echo '<tr><th scope="row"><label for="cr_url">' . esc_html__( 'Page that breaks', 'conflict-radar' ) . '</label></th>';
+		echo '<tr><th scope="row"><label for="cr_url">' . esc_html__( 'Page that breaks', 'conflict-radar-finder' ) . '</label></th>';
 		echo '<td><input type="url" id="cr_url" name="cr_url" class="regular-text" value="' . esc_attr( home_url( '/' ) ) . '" /> ';
-		echo '<span class="description">' . esc_html__( 'A page on this site where the problem shows.', 'conflict-radar' ) . '</span></td></tr>';
-		echo '<tr><th scope="row"><label for="cr_marker">' . esc_html__( 'Text that must appear', 'conflict-radar' ) . '</label></th>';
+		echo '<span class="description">' . esc_html__( 'A page on this site where the problem shows.', 'conflict-radar-finder' ) . '</span></td></tr>';
+		echo '<tr><th scope="row"><label for="cr_marker">' . esc_html__( 'Text that must appear', 'conflict-radar-finder' ) . '</label></th>';
 		echo '<td><input type="text" id="cr_marker" name="cr_marker" class="regular-text" value="" /> ';
-		echo '<span class="description">' . esc_html__( 'Optional. If the broken page still loads but loses content, name text a healthy page always has (for example your site title) — its absence then counts as broken.', 'conflict-radar' ) . '</span></td></tr>';
+		echo '<span class="description">' . esc_html__( 'Optional. If the broken page still loads but loses content, name text a healthy page always has (for example your site title) — its absence then counts as broken.', 'conflict-radar-finder' ) . '</span></td></tr>';
 		echo '</tbody></table>';
-		echo '<p><button type="submit" class="button button-primary">' . esc_html__( 'Start the search', 'conflict-radar' ) . '</button></p></form>';
+		echo '<p><button type="submit" class="button button-primary">' . esc_html__( 'Start the search', 'conflict-radar-finder' ) . '</button></p></form>';
 	}
 
 	/**
@@ -322,7 +322,7 @@ final class AdminPage {
 			return;
 		}
 		$names = (array) $job['names'];
-		echo '<h3>' . esc_html__( 'What the search tested', 'conflict-radar' ) . '</h3><ol>';
+		echo '<h3>' . esc_html__( 'What the search tested', 'conflict-radar-finder' ) . '</h3><ol>';
 		foreach ( $history as $entry ) {
 			$subset = isset( $entry['subset'] ) && is_array( $entry['subset'] ) ? $entry['subset'] : array();
 			$labels = array();
@@ -330,11 +330,11 @@ final class AdminPage {
 				$labels[] = isset( $names[ $basename ] ) ? $names[ $basename ] : $basename;
 			}
 			$what = array() === $labels
-				? __( 'all plugins off', 'conflict-radar' )
+				? __( 'all plugins off', 'conflict-radar-finder' )
 				: implode( ', ', $labels );
 			echo '<li>' . esc_html( $what ) . ' — <strong>' . ( ! empty( $entry['fault'] )
-				? esc_html__( 'problem reproduced', 'conflict-radar' )
-				: esc_html__( 'page healthy', 'conflict-radar' ) ) . '</strong></li>';
+				? esc_html__( 'problem reproduced', 'conflict-radar-finder' )
+				: esc_html__( 'page healthy', 'conflict-radar-finder' ) ) . '</strong></li>';
 		}
 		echo '</ol>';
 	}
@@ -347,30 +347,30 @@ final class AdminPage {
 	 * @param array      $names     Plugin basename → display name.
 	 */
 	private static function render_session_section( $session, bool $bisecting, array $names ): void {
-		echo '<h2>' . esc_html__( 'Troubleshooting mode (manual)', 'conflict-radar' ) . '</h2>';
+		echo '<h2>' . esc_html__( 'Troubleshooting mode (manual)', 'conflict-radar-finder' ) . '</h2>';
 		if ( null === $session ) {
-			echo '<p>' . esc_html__( 'Turn every other plugin off — for your browser only — and flip them back on one by one yourself. Visitors keep seeing the real site, and the mode switches itself off after an hour.', 'conflict-radar' ) . '</p>';
+			echo '<p>' . esc_html__( 'Turn every other plugin off — for your browser only — and flip them back on one by one yourself. Visitors keep seeing the real site, and the mode switches itself off after an hour.', 'conflict-radar-finder' ) . '</p>';
 			echo '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '">';
 			wp_nonce_field( 'cr_start_session' );
 			echo '<input type="hidden" name="action" value="cr_start_session" />';
 			echo '<p><label><input type="checkbox" name="cr_switch_theme" value="1" checked /> '
-				. esc_html__( 'Also switch me to the default theme', 'conflict-radar' ) . '</label></p>';
-			echo '<p><button type="submit" class="button">' . esc_html__( 'Start troubleshooting mode', 'conflict-radar' ) . '</button></p></form>';
+				. esc_html__( 'Also switch me to the default theme', 'conflict-radar-finder' ) . '</label></p>';
+			echo '<p><button type="submit" class="button">' . esc_html__( 'Start troubleshooting mode', 'conflict-radar-finder' ) . '</button></p></form>';
 			return;
 		}
 
 		$expires = isset( $session['expires'] ) ? (int) $session['expires'] : 0;
-		echo '<p><strong>' . esc_html__( 'Troubleshooting mode is ON', 'conflict-radar' ) . '</strong> '
-			. esc_html( sprintf( /* translators: %s: time the mode switches itself off */ __( 'until %s, for this browser only.', 'conflict-radar' ), gmdate( 'H:i', $expires ) . ' UTC' ) ) . '</p>';
+		echo '<p><strong>' . esc_html__( 'Troubleshooting mode is ON', 'conflict-radar-finder' ) . '</strong> '
+			. esc_html( sprintf( /* translators: %s: time the mode switches itself off */ __( 'until %s, for this browser only.', 'conflict-radar-finder' ), gmdate( 'H:i', $expires ) . ' UTC' ) ) . '</p>';
 
 		if ( $bisecting ) {
-			echo '<p>' . esc_html__( 'The automated search is using this session right now.', 'conflict-radar' ) . '</p>';
+			echo '<p>' . esc_html__( 'The automated search is using this session right now.', 'conflict-radar-finder' ) . '</p>';
 		} else {
 			$enabled = isset( $session['plugins'] ) && is_array( $session['plugins'] ) ? $session['plugins'] : array();
 			echo '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '">';
 			wp_nonce_field( 'cr_save_session_plugins' );
 			echo '<input type="hidden" name="action" value="cr_save_session_plugins" />';
-			echo '<fieldset><legend class="screen-reader-text">' . esc_html__( 'Plugins enabled for you', 'conflict-radar' ) . '</legend>';
+			echo '<fieldset><legend class="screen-reader-text">' . esc_html__( 'Plugins enabled for you', 'conflict-radar-finder' ) . '</legend>';
 			foreach ( $names as $basename => $label ) {
 				if ( plugin_basename( CONFLICT_RADAR_FILE ) === $basename ) {
 					continue;
@@ -379,17 +379,17 @@ final class AdminPage {
 					. checked( in_array( $basename, $enabled, true ), true, false ) . ' /> ' . esc_html( $label ) . '</label>';
 			}
 			echo '</fieldset>';
-			echo '<p><button type="submit" class="button">' . esc_html__( 'Apply to my view', 'conflict-radar' ) . '</button></p></form>';
+			echo '<p><button type="submit" class="button">' . esc_html__( 'Apply to my view', 'conflict-radar-finder' ) . '</button></p></form>';
 		}
 
 		echo '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '">';
 		wp_nonce_field( 'cr_stop_session' );
 		echo '<input type="hidden" name="action" value="cr_stop_session" />';
-		echo '<p><button type="submit" class="button button-primary">' . esc_html__( 'Exit troubleshooting mode', 'conflict-radar' ) . '</button></p></form>';
+		echo '<p><button type="submit" class="button button-primary">' . esc_html__( 'Exit troubleshooting mode', 'conflict-radar-finder' ) . '</button></p></form>';
 
 		$exit_url = SessionManager::exit_url();
 		if ( '' !== $exit_url ) {
-			echo '<p class="description">' . esc_html__( 'Break-glass exit: if wp-admin ever breaks while this mode is on, visiting this link ends it immediately:', 'conflict-radar' )
+			echo '<p class="description">' . esc_html__( 'Break-glass exit: if wp-admin ever breaks while this mode is on, visiting this link ends it immediately:', 'conflict-radar-finder' )
 				. '<br /><code>' . esc_html( $exit_url ) . '</code></p>';
 		}
 	}
@@ -398,12 +398,12 @@ final class AdminPage {
 	 * The debug bundle panel.
 	 */
 	private static function render_debug_section(): void {
-		echo '<h2>' . esc_html__( 'Debug info for support', 'conflict-radar' ) . '</h2>';
-		echo '<p>' . esc_html__( 'The facts a plugin author or support forum will ask for, with private values (email addresses, file paths, IP addresses, tokens) already removed. Safe to paste publicly.', 'conflict-radar' ) . '</p>';
+		echo '<h2>' . esc_html__( 'Debug info for support', 'conflict-radar-finder' ) . '</h2>';
+		echo '<p>' . esc_html__( 'The facts a plugin author or support forum will ask for, with private values (email addresses, file paths, IP addresses, tokens) already removed. Safe to paste publicly.', 'conflict-radar-finder' ) . '</p>';
 		echo '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '">';
 		wp_nonce_field( 'cr_download_debug' );
 		echo '<input type="hidden" name="action" value="cr_download_debug" />';
-		echo '<p><button type="submit" class="button">' . esc_html__( 'Download debug info (.txt)', 'conflict-radar' ) . '</button></p></form>';
+		echo '<p><button type="submit" class="button">' . esc_html__( 'Download debug info (.txt)', 'conflict-radar-finder' ) . '</button></p></form>';
 	}
 
 	// ------------------------------------------------------------------
@@ -417,7 +417,7 @@ final class AdminPage {
 	 */
 	private static function guard( string $action ): void {
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( esc_html__( 'You do not have permission to do this.', 'conflict-radar' ) );
+			wp_die( esc_html__( 'You do not have permission to do this.', 'conflict-radar-finder' ) );
 		}
 		check_admin_referer( $action );
 	}

@@ -33,7 +33,7 @@ Conflict Radar never changes your real plugin list, never switches your live the
 
 == Installation ==
 
-1. Upload the plugin files to `/wp-content/plugins/conflict-radar/`, or install it through the WordPress plugins screen.
+1. Upload the plugin files to `/wp-content/plugins/conflict-radar-finder/`, or install it through the WordPress plugins screen.
 2. Activate it through the 'Plugins' screen.
 3. Go to **Tools → Conflict Radar** and either start troubleshooting mode or run the automated search.
 

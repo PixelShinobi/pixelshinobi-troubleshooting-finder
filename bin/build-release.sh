@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Build the WordPress.org release zip: build/conflict-radar.zip with a
-# single top-level conflict-radar/ folder, production autoloader
+# Build the WordPress.org release zip: build/conflict-radar-finder.zip with a
+# single top-level conflict-radar-finder/ folder, production autoloader
 # included, dev files excluded via ../.distignore.
 set -euo pipefail
 
@@ -16,7 +16,7 @@ fi
 
 WORK="$(mktemp -d)"
 trap 'rm -rf "$WORK"' EXIT
-STAGE="$WORK/conflict-radar"
+STAGE="$WORK/conflict-radar-finder"
 mkdir -p "$STAGE"
 
 rsync -a --exclude-from=.distignore ./ "$STAGE"/
@@ -38,9 +38,9 @@ fi
 rm -f "$STAGE"/composer.lock
 
 mkdir -p "$ROOT/build"
-OUT="$ROOT/build/conflict-radar.zip"
+OUT="$ROOT/build/conflict-radar-finder.zip"
 rm -f "$OUT"
-( cd "$WORK" && zip -qr "$OUT" conflict-radar )
+( cd "$WORK" && zip -qr "$OUT" conflict-radar-finder )
 
 echo "Built $OUT (version $VERSION)"
 unzip -l "$OUT" | tail -5
