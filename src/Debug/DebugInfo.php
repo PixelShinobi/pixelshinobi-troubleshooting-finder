@@ -33,11 +33,11 @@ final class DebugInfo {
 		$theme          = wp_get_theme();
 
 		$lines   = array();
-		$lines[] = '=== Conflict Radar debug bundle ===';
+		$lines[] = '=== PixelShinobi Troubleshooting Finder debug bundle ===';
 		$lines[] = 'Generated: ' . gmdate( 'Y-m-d H:i:s' ) . ' UTC — private values (emails, paths, IPs, tokens) are redacted.';
 		$lines[] = '';
 		$lines[] = '--- Site ---';
-		$lines[] = 'Conflict Radar: ' . CONFLICT_RADAR_VERSION;
+		$lines[] = 'PixelShinobi Troubleshooting Finder: ' . CONFLICT_RADAR_VERSION;
 		$lines[] = 'WordPress: ' . $wp_version . ( is_multisite() ? ' (multisite)' : '' );
 		$lines[] = 'PHP: ' . phpversion() . ' (' . php_sapi_name() . ')';
 		$lines[] = 'Memory limit: ' . ( defined( 'WP_MEMORY_LIMIT' ) ? WP_MEMORY_LIMIT : 'default' );
@@ -59,7 +59,7 @@ final class DebugInfo {
 				: $data['Name'] . ' ' . $data['Version'] . ' (' . $basename . ')';
 		}
 		$lines[] = '';
-		$lines[] = '--- Conflict Radar state ---';
+		$lines[] = '--- PixelShinobi Troubleshooting Finder state ---';
 		$lines[] = 'Troubleshooting session: ' . ( null === SessionManager::current() ? 'off' : 'on' );
 
 		return Redactor::redact( implode( "\n", $lines ) );

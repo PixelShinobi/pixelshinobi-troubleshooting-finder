@@ -1,5 +1,5 @@
 /**
- * Conflict Radar admin: drives the bisect one probe step per request,
+ * PixelShinobi Troubleshooting Finder admin: drives the bisect one probe step per request,
  * so the search survives the request time limits of cheap hosting.
  * Plain browser APIs, no dependencies.
  */

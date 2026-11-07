@@ -1,6 +1,6 @@
 <?php
 /**
- * Uninstall: remove every trace of Conflict Radar.
+ * Uninstall: remove every trace of PixelShinobi Troubleshooting Finder.
  *
  * Deletes the session and bisect options (on every site of a
  * multisite) and the must-use loader file. The real active_plugins

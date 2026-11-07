@@ -18,7 +18,7 @@
 		},
 		"sort-packages": true
 	},
-	"description": "Conflict Radar – Troubleshooting & Plugin Conflict Finder. Tells WordPress site owners which plugin breaks their site, with an automated bisect in a session only they can see.",
+	"description": "PixelShinobi Troubleshooting Finder. Tells WordPress site owners which plugin breaks their site, with an automated bisect in a session only they can see.",
 	"license": "GPL-2.0-or-later",
 	"minimum-stability": "stable",
 	"name": "pixelshinobi/conflict-radar",

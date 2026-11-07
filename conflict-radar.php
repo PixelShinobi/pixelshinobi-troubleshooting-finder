@@ -1,13 +1,13 @@
 <?php
 /**
- * Plugin Name:       Conflict Radar – Troubleshooting & Conflict Finder
- * Plugin URI:        https://github.com/PixelShinobi/conflict-radar
- * Description:       Find which plugin breaks your site. Conflict Radar runs an automated bisect in a troubleshooting session only you can see, and tells you the culprit — or that it isn't a plugin at all.
+ * Plugin Name:       PixelShinobi Troubleshooting Finder
+ * Plugin URI:        https://github.com/PixelShinobi/pixelshinobi-troubleshooting-finder
+ * Description:       Find which plugin breaks your site. PixelShinobi Troubleshooting Finder runs an automated bisect in a troubleshooting session only you can see, and tells you the culprit — or that it isn't a plugin at all.
  * Version:           0.1.0
  * Author:            Jizhou Yang
  * License:           GPLv2 or later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain:       conflict-radar-finder
+ * Text Domain:       pixelshinobi-troubleshooting-finder
  * Requires at least: 6.0
  * Requires PHP:      7.4
  *

@@ -1,11 +1,11 @@
 <?php
 /**
- * Conflict Radar troubleshooting loader — installed as a must-use plugin.
+ * PixelShinobi Troubleshooting Finder troubleshooting loader — installed as a must-use plugin.
  *
  * This file is copied into wp-content/mu-plugins while a troubleshooting
  * session exists and removed when the session ends. It must stay
  * STANDALONE: it runs before the main plugin (and possibly without it),
- * so it cannot use Conflict Radar classes. Style sniffs are excluded for
+ * so it cannot use PixelShinobi Troubleshooting Finder classes. Style sniffs are excluded for
  * this path in phpcs.xml.dist; keep the code simple and safe by hand.
  *
  * How it works: the admin who started the session carries a cookie with
@@ -23,7 +23,7 @@
 
 // This file is only ever loaded by WordPress as a must-use plugin.
 if ( ! defined( 'ABSPATH' ) ) {
-	return;
+	exit;
 }
 
 ( function () {
@@ -94,7 +94,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			}
 			$cr_active = array() === $cr_real ? $cr_wanted : array_values( array_intersect( $cr_real, $cr_wanted ) );
 			if ( '' !== $cr_self && ! in_array( $cr_self, $cr_active, true ) ) {
-				// Conflict Radar itself always stays on, so the admin
+				// PixelShinobi Troubleshooting Finder itself always stays on, so the admin
 				// can always reach the exit.
 				$cr_active[] = $cr_self;
 			}
