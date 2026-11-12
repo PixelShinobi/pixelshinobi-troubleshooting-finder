@@ -4,7 +4,7 @@ Tags: troubleshooting, plugin conflict, health check, debug, support
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.1.0
+Stable tag: 0.1.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,7 +12,7 @@ Find which plugin breaks your site — automatically. Troubleshooting only you c
 
 == Description ==
 
-Your site broke after an update, and the advice is always the same: deactivate all your plugins, then turn them back on one by one until it breaks again. On a site with 20 or 30 plugins, that is an afternoon of tedious clicking — on your live site.
+Your site is broken after an update — a white screen of death, a fatal error message, or a 500 error where a page used to be — and the advice is always the same: deactivate all your plugins, then turn them back on one by one until it breaks again. On a site with 20 or 30 plugins, that is an afternoon of tedious clicking — on your live site.
 
 PixelShinobi Troubleshooting Finder does that search for you, and does it safely:
 
@@ -27,7 +27,7 @@ PixelShinobi Troubleshooting Finder does that search for you, and does it safely
 * *It needs a combination* — no single plugin is to blame; PixelShinobi Troubleshooting Finder shows the smallest set of plugins that breaks the page together.
 * *Could not reproduce* — the page worked with everything on, so the problem is intermittent or already fixed.
 
-**Debug info that is safe to share.** One click builds the bundle every support forum asks for — WordPress and PHP versions, theme, active plugins — with email addresses, file paths, IP addresses and tokens already removed, ready to paste into a support thread.
+**Debug info that is safe to share.** One click builds the bundle every support forum asks for — WordPress and PHP versions, theme, active plugins — with email addresses, file paths, IP addresses and tokens already removed. Copy it straight to your clipboard, or download it as a text file, and paste it into a support thread.
 
 PixelShinobi Troubleshooting Finder never changes your real plugin list, never switches your live theme, and never phones home. Everything happens on your own site.
 
@@ -38,6 +38,10 @@ PixelShinobi Troubleshooting Finder never changes your real plugin list, never s
 3. Go to **Tools → PixelShinobi Troubleshooting Finder** and either start troubleshooting mode or run the automated search.
 
 == Frequently Asked Questions ==
+
+= A plugin update broke my site. Where do I start? =
+
+That is exactly what this plugin is for. As long as wp-admin still loads, run the automated search from **Tools → PixelShinobi Troubleshooting Finder**: it tests your plugins in halves, in a session only you can see, and ends with a verdict naming the culprit — or telling you honestly that the problem is not a plugin at all. If the white screen or error only shows on one page, give the search that page's address, and name a piece of text a healthy page always shows if the broken page still loads but loses content.
 
 = Will my visitors see anything while I troubleshoot? =
 
@@ -67,10 +71,17 @@ No. There are no accounts, no tracking and no calls to outside servers. The test
 
 == Changelog ==
 
+= 0.1.1 =
+* Debug info now appears right on the page with a copy-to-clipboard button, so you can paste it into a support thread without downloading the file first (the download is still there).
+* Clearer wording in the description and a new FAQ entry for sites broken by a plugin update.
+
 = 0.1.0 =
 * First release: session-only troubleshooting mode, the automated plugin-conflict search, plain-English verdicts, and the privacy-redacted debug bundle.
 
 == Upgrade Notice ==
+
+= 0.1.1 =
+Adds a copy-to-clipboard button for the debug bundle, shown right on the page; the search and troubleshooting mode are unchanged.
 
 = 0.1.0 =
 First release.

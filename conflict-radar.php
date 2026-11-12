@@ -3,7 +3,7 @@
  * Plugin Name:       PixelShinobi Troubleshooting Finder
  * Plugin URI:        https://github.com/PixelShinobi/pixelshinobi-troubleshooting-finder
  * Description:       Find which plugin breaks your site. PixelShinobi Troubleshooting Finder runs an automated bisect in a troubleshooting session only you can see, and tells you the culprit — or that it isn't a plugin at all.
- * Version:           0.1.0
+ * Version:           0.1.1
  * Author:            Jizhou Yang
  * License:           GPLv2 or later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'CONFLICT_RADAR_VERSION', '0.1.0' );
+define( 'CONFLICT_RADAR_VERSION', '0.1.1' );
 define( 'CONFLICT_RADAR_FILE', __FILE__ );
 
 // In a release build, Composer's autoloader ships in vendor/. Cloning

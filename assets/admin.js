@@ -1,10 +1,47 @@
 /**
  * PixelShinobi Troubleshooting Finder admin: drives the bisect one probe step per request,
- * so the search survives the request time limits of cheap hosting.
+ * so the search survives the request time limits of cheap hosting,
+ * and wires the debug bundle's copy-to-clipboard button.
  * Plain browser APIs, no dependencies.
  */
 ( function () {
 	var cfg = window.ConflictRadar || {};
+
+	// Copy the debug bundle. The Clipboard API needs a secure context,
+	// so on plain-http admin screens fall back to selecting the text and
+	// the legacy copy command; if both fail, say how to copy by hand.
+	var copyButton = document.getElementById( 'cr-copy-debug' );
+	var bundle = document.getElementById( 'cr-debug-bundle' );
+	var copyStatus = document.getElementById( 'cr-copy-status' );
+	if ( copyButton && bundle ) {
+		copyButton.addEventListener( 'click', function () {
+			function done( ok ) {
+				if ( copyStatus ) {
+					copyStatus.textContent = ok
+						? 'Copied — paste it into your support thread.'
+						: 'Copy failed — click the text, select all, and copy manually.';
+				}
+			}
+			if ( navigator.clipboard && navigator.clipboard.writeText ) {
+				navigator.clipboard.writeText( bundle.value ).then(
+					function () { done( true ); },
+					function () { done( fallback() ); }
+				);
+			} else {
+				done( fallback() );
+			}
+			function fallback() {
+				bundle.focus();
+				bundle.select();
+				try {
+					return document.execCommand( 'copy' );
+				} catch ( e ) {
+					return false;
+				}
+			}
+		} );
+	}
+
 	if ( ! cfg.running ) {
 		return;
 	}

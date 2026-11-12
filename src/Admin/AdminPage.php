@@ -395,11 +395,16 @@ final class AdminPage {
 	}
 
 	/**
-	 * The debug bundle panel.
+	 * The debug bundle panel: the bundle inline with a copy button (the
+	 * usual next step is pasting it into a support thread), plus the
+	 * original download for people who would rather attach a file.
 	 */
 	private static function render_debug_section(): void {
 		echo '<h2>' . esc_html__( 'Debug info for support', 'pixelshinobi-troubleshooting-finder' ) . '</h2>';
 		echo '<p>' . esc_html__( 'The facts a plugin author or support forum will ask for, with private values (email addresses, file paths, IP addresses, tokens) already removed. Safe to paste publicly.', 'pixelshinobi-troubleshooting-finder' ) . '</p>';
+		echo '<p><textarea id="cr-debug-bundle" class="large-text code" rows="14" readonly>' . esc_textarea( DebugInfo::collect() ) . '</textarea></p>';
+		echo '<p><button type="button" class="button" id="cr-copy-debug">' . esc_html__( 'Copy debug info to clipboard', 'pixelshinobi-troubleshooting-finder' ) . '</button> ';
+		echo '<span id="cr-copy-status" role="status"></span></p>';
 		echo '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '">';
 		wp_nonce_field( 'cr_download_debug' );
 		echo '<input type="hidden" name="action" value="cr_download_debug" />';
